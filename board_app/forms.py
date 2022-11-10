@@ -14,9 +14,7 @@ class PostForm(forms.ModelForm):
 
 
 class UserReplyForm(forms.ModelForm):
-    """Модель формы для отклика к конкретному объявлению.
-    Эта форма размещается на странице объявления post_detail.
-    Автор отклика и id связанного объявления добавляются в методе post представления PostDetailView"""
+    """Модель формы для отклика к конкретному объявлению"""
     class Meta:
         model = UserReply
         fields = ['text', ]

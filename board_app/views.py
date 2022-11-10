@@ -10,7 +10,7 @@ from .forms import PostForm, UserReplyForm
 
 
 class PostListView(ListView):
-    """Вывод всех объявлений, главная страница"""
+    """Вывод всех объявлений"""
     model = Post
     template_name = 'board_app/posts.html'
     context_object_name = 'posts'
@@ -20,31 +20,22 @@ class PostListView(ListView):
     def get_queryset(self):
         """Такой способ позволит исп. вместе и фильтрацию, и пагинацию.
         Не нужно в шаблоне итерироваться по posts_filter.qs"""
-        # Получаем обычный запрос
         queryset = super().get_queryset()
-        # Используем наш класс фильтрации.
-        # self.request.GET содержит объект QueryDict, который мы рассматривали
-        # в этом юните ранее.
-        # Сохраняем нашу фильтрацию в объекте класса,
-        # чтобы потом добавить в контекст и использовать в шаблоне.
         self.filterset = PostsListFilter(self.request.GET, queryset)
-        # Возвращаем из функции отфильтрованный список
         return self.filterset.qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Добавляем фильтр постов PostsListFilter в контекст, чтобы добавить форму поиска в шаблон
         context['posts_filter'] = self.filterset
         return context
 
 
 class PostDetailView(DetailView):
-    """Вывод конкретного объявления"""
+    """Вывод выбранного объявления"""
     model = Post
     template_name = 'board_app/post_detail.html'
     context_object_name = 'post'
 
-    # Добавляем нашу форму для откликов в контекст(переменная для шаблона)
     form = UserReplyForm
     extra_context = {'form': UserReplyForm}
 
@@ -56,9 +47,7 @@ class PostDetailView(DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        """При отправке формы выполнить следующий код
-        form.instance - для автоматического заполнения (переопределения) полей формы
-        instance - типа данный объект, вроде self, но со своими особенностями"""
+
         form = UserReplyForm(request.POST)
         if form.is_valid():
             form.instance.postReply_id = self.kwargs.get('pk')
@@ -89,7 +78,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, **kwargs):
         """Метод заполняет форму на странице add_post.html текущим объявлением,
-        чтобы пользователь мог отредактировать необходимую информацию"""
+        для его редактирования"""
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
 
@@ -120,8 +109,6 @@ class UserReplyListView(LoginRequiredMixin, ListView):
         authoruser_id = self.request.user.id
         queryset = UserReply.objects.filter(postReply__authorUser=authoruser_id).order_by('-creationDate')
         self.filterset = UserReplyFilter(self.request.GET, queryset)
-        # Возвращаем из функции отфильтрованный список товаров, что позволит итерироваться в шаблоне по
-        # context_object_name, а не reply_filter.qs.
         return self.filterset.qs
 
     def get_context_data(self, **kwargs):

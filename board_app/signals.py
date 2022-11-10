@@ -9,7 +9,7 @@ from .models import UserReply, Post
 @receiver(post_save, sender=UserReply)
 def send_msg(instance, created, **kwargs):
     """функция-сигнал, которая срабатывает, когда в модель UserReply (отклики) вносятся изменения
-    если создается новая запись (if created), то автору объявления отправляется письмо-уведомление,
+    если создается новая запись, то автору объявления отправляется письмо-уведомление,
     если автор объявления принимает отклик, то автору отклика придет письмо"""
     user_author = Post.objects.get(pk=instance.postReply_id).authorUser
     post_tittle = Post.objects.get(pk=instance.postReply_id).title

@@ -21,7 +21,7 @@ class UserCreation(TemplateView):
 
     def post(self, request, *args, **kwargs):
         form = BaseRegisterForm(request.POST)
-        # Дозаполняем необходимые поля для регистрации нового пользователя
+
         if form.is_valid():
             instance_email_name = form.instance.email.split('@')[0]
             signup_username = form.instance.username = f"{instance_email_name}_{random.randint(1, 1000)}"
@@ -39,13 +39,11 @@ class UserCreation(TemplateView):
                 form.instance.is_active = False
                 form.save()
                 signup_user = User.objects.filter(username=signup_username).first()
-
-                # Без HttpResponseRedirect ошибка AttributeError: 'str' object has no attribute 'get'
                 return HttpResponseRedirect(reverse('otp_page', kwargs={'pk': signup_user.id}))
 
 
 class OTPVerif(View):
-    """Представление генерации и проверки одноразвого пароля"""
+    """Представление проверки одноразового пароля"""
 
     def post(self, request, *args, **kwargs):
         form = OTPcodeForm(request.POST)
@@ -57,15 +55,13 @@ class OTPVerif(View):
         if form.is_valid():
             # Какими бы ни были данные, представленные в форме, как только они будут успешно проверены вызовом
             # is_valid() (и is_valid() вернет True), проверенные данные формы окажутся в словаре form.cleaned_data.
-            # На данный момент вы все еще можете получить доступ к непроверенным данным непосредственно из request.POST,
-            # но проверенные данные лучше.
             user_code_answer = form.cleaned_data['code']
-            if otp == user_code_answer:  # Сравниваем указанный пользователем код в форме с отправленным
+            if otp == user_code_answer:  # Сравниваем указанный пользователем код с отправленным
                 user.is_active = True
                 user.save()
                 new_user_obj.delete()  # Удаляем объект NewUserOTP с кодом
 
-                # Отправляем письмо "Спасибо за регистрацию"
+                # Отправляем письмо
                 send_mail(
                     subject=f'Регистрация на VVS_D16 подтверждена!',
                     message=f'Здравствуйте, {user.username}, спасибо за регистрацию!',

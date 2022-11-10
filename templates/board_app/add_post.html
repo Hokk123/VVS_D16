@@ -9,7 +9,7 @@
 {% block content %}
 
 <h3>Объявление:</h3>
-<!--enctype="multipart/form-data" позволяет загружать файлы-->
+
 <form enctype="multipart/form-data" method="POST">
     {% csrf_token %}
     {{ form.media }}

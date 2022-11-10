@@ -29,7 +29,7 @@ class PostAdmin(admin.ModelAdmin):
         Переопределяем метод сохранения модели
         """
         if not change:  # Проверяем что запись только создаётся
-            obj.authorUser = request.user  # Присваеваем полю автор текущего пользователя
+            obj.authorUser = request.user  # Присваиваем полю автор текущего пользователя
 
         super(PostAdmin, self).save_model(
             request=request,
@@ -47,7 +47,7 @@ class UserReplyAdmin(admin.ModelAdmin):
         Переопределяем метод сохранения модели
         """
         if not change:  # Проверяем что запись только создаётся
-            obj.userReply = request.user  # Присваеваем полю автор текущего пользователя
+            obj.userReply = request.user  # Присваиваем полю автор текущего пользователя
 
         super(UserReplyAdmin, self).save_model(
             request=request,

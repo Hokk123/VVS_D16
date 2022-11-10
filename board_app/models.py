@@ -29,8 +29,7 @@ class Post(models.Model):
         return f'{self.title}'
 
     def get_absolute_url(self):
-        """Функция перенаправления пользователя после добавления или изменения данных в бд
-        в данном случае - обратиться к url с именем post_detail(см name в urls), передав pk = id"""
+        """Функция перенаправления пользователя после добавления или изменения данных в бд"""
         return reverse('post_detail', kwargs={'pk': self.id})
 
 

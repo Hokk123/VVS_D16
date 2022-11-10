@@ -56,8 +56,7 @@ class Command(BaseCommand):
         scheduler.add_job(
             news_sender,
             trigger=CronTrigger(hour="16"),
-            # отправляем письма подписчикам каждый день в 13.00 hour="13"
-            # То же, что и интервал, но задача тригера таким образом более понятна django
+            # отправляем письма подписчикам каждый день в 16.00
             id="news_sender",  # уникальный ID
             max_instances=1,
             replace_existing=True,
@@ -69,7 +68,7 @@ class Command(BaseCommand):
             trigger=CronTrigger(
                 day_of_week="mon", hour="01", minute="00"
             ),
-            # Каждую неделю будут удаляться старые задачи, которые либо не удалось выполнить, либо уже выполнять не надо.
+            # Каждую неделю будут удаляться старые задачи
             id="delete_old_job_executions",
             max_instances=1,
             replace_existing=True,
